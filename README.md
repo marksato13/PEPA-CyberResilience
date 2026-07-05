@@ -4,6 +4,25 @@
 
 PEPA CyberResilience es una herramienta open source para replicar una arquitectura Big Data de ciberseguridad en **Ubuntu Server**. Incluye instalacion automatizada, pipeline Spark, almacenamiento Parquet, dashboard Streamlit, simulador de eventos en vivo y una plantilla para integrar logs reales tipo SIEM.
 
+
+## Live demo publico
+
+El dashboard puede publicarse como app Streamlit desde este repositorio. La forma recomendada es Streamlit Community Cloud:
+
+```text
+Repositorio: marksato13/PEPA-CyberResilience
+Branch: main
+Main file path: app.py
+```
+
+Cuando Streamlit genere la URL publica, reemplaza este placeholder:
+
+```text
+Live Demo: pendiente de despliegue
+```
+
+Guia completa: [Despliegue publico](docs/DESPLIEGUE_PUBLICO.md).
+
 ## Que instala automaticamente
 
 El script `setup.sh` prepara el servidor e instala las herramientas necesarias para duplicar el proyecto:
