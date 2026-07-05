@@ -300,3 +300,10 @@ ok
 ## Licencia
 
 MIT License.
+
+
+## Agradecimiento especial
+
+Un agradecimiento especial al señor **Calderon**, mas conocido como **PEPA**, por ser el impulsador dentro del equipo y por motivar la evolucion de este proyecto hacia una herramienta open source replicable para analisis, laboratorio y monitoreo de ciberseguridad.
+
+![Señor Calderon, PEPA](docs/assets/pepa_calderon.png)
