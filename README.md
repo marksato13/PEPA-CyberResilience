@@ -4,24 +4,90 @@
 
 PEPA CyberResilience es una herramienta open source para replicar una arquitectura Big Data de ciberseguridad en **Ubuntu Server**. Incluye instalacion automatizada, pipeline Spark, almacenamiento Parquet, dashboard Streamlit, simulador de eventos en vivo y una plantilla para integrar logs reales tipo SIEM.
 
+## Visualizacion publica
 
-## Live demo publico
-
-El dashboard puede publicarse como app Streamlit desde este repositorio. La forma recomendada es Streamlit Community Cloud:
-
-```text
-Repositorio: marksato13/PEPA-CyberResilience
-Branch: main
-Main file path: app.py
-```
-
-Cuando Streamlit genere la URL publica, reemplaza este placeholder:
+Dashboard publico actual:
 
 ```text
-Live Demo: pendiente de despliegue
+https://immunology-doll-bios-treatments.trycloudflare.com
 ```
 
-Guia completa: [Despliegue publico](docs/DESPLIEGUE_PUBLICO.md).
+Este enlace esta publicado mediante **Cloudflare Quick Tunnel** desde el servidor de demostracion. Es util para visualizacion rapida, presentaciones y revision del dashboard sin instalar el proyecto.
+
+> Nota: al ser un Quick Tunnel sin dominio propio, el servicio se mantiene activo con `systemd`, pero Cloudflare puede cambiar la URL si se reinicia el tunel o la VM. Para una URL permanente se recomienda un dominio con Cloudflare Tunnel nombrado, Streamlit Community Cloud o un VPS con Nginx + HTTPS.
+
+## Autores
+
+- Ruben Mark Salazar Tocas - Cod. 75184251
+- Daniel H. Calderon Camacho - Cod. 71101519
+- Uziel Elias Sauñe Fernandez - Cod. 75664788
+
+Proyecto desarrollado en el contexto academico de **UPeU - Semestre 2026-1**.
+
+## Historia del proyecto
+
+PEPA nacio como una arquitectura academica de Big Data para analizar resiliencia informatica y eventos de ciberseguridad. La primera version integraba tres fuentes CSV, ejecutaba transformaciones con Apache Spark, generaba un dataset Parquet particionado y visualizaba resultados en un dashboard Streamlit.
+
+Luego el proyecto evoluciono hacia una herramienta replicable: se agrego instalacion automatizada, CLI de operacion (`pepa.sh`), modo demo con eventos sinteticos, modo laboratorio para datasets propios y una ruta de modo produccion mediante parsers de logs reales. El objetivo actual es que cualquier persona pueda clonar el repositorio, instalarlo en Ubuntu Server y adaptar la arquitectura a sus propios datos.
+
+## Para que sirve
+
+PEPA sirve como base open source para:
+
+- Construir un laboratorio Big Data de ciberseguridad.
+- Procesar datasets historicos con Spark.
+- Consolidar varias fuentes en Parquet analitico.
+- Visualizar KPIs, tendencias, severidad, paises, industrias y tipos de ataque.
+- Simular eventos en vivo para demos o clases.
+- Integrar logs reales de Suricata, Wazuh, Zeek, Syslog, firewalls o SIEM.
+- Usarlo como prototipo de mini-SIEM analitico.
+
+## Implementacion rapida
+
+En una VM o servidor limpio con Ubuntu Server:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+
+git clone https://github.com/marksato13/PEPA-CyberResilience.git
+cd PEPA-CyberResilience
+chmod +x setup.sh pepa.sh run.sh stop.sh status.sh
+./setup.sh
+./pepa.sh status
+./pepa.sh url
+```
+
+Abrir el dashboard local del servidor:
+
+```text
+http://IP_DEL_SERVIDOR:8501
+```
+
+Publicar temporalmente sin dominio:
+
+```bash
+cloudflared tunnel --url http://localhost:8501
+```
+
+## Modos de uso
+
+| Modo | Comando | Fuente | Uso recomendado |
+| --- | --- | --- | --- |
+| Demo | `./pepa.sh run --mode demo` | eventos sinteticos | demo publica, clases, revision rapida |
+| Laboratorio | `./pepa.sh run --mode lab` | CSV/JSON historicos | tesis, cursos, pruebas y datos propios |
+| Produccion | `./pepa.sh run --mode production` | logs reales normalizados | monitoreo continuo estilo mini-SIEM |
+
+## Estado actual del repositorio
+
+- Instalador automatizado para Ubuntu Server: listo.
+- CLI `pepa.sh`: listo.
+- Dashboard Streamlit: listo.
+- Pipeline Spark a Parquet: listo.
+- Simulador de eventos en vivo: listo.
+- Parser base para logs reales: incluido.
+- Guia de despliegue publico: incluida.
+- Demo por Cloudflare Quick Tunnel: activo al momento de esta publicacion.
 
 ## Que instala automaticamente
 
@@ -227,6 +293,9 @@ ok
 
 - [Manual de implementacion](docs/IMPLEMENTACION.md)
 - [Modos de implementacion](docs/MODOS_IMPLEMENTACION.md)
+- [Historia del proyecto](docs/HISTORIA.md)
+- [Autores](AUTHORS.md)
+- [Despliegue publico](docs/DESPLIEGUE_PUBLICO.md)
 
 ## Licencia
 

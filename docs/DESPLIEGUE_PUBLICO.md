@@ -1,6 +1,24 @@
 # Despliegue publico del dashboard
 
-GitHub solo almacena el codigo. Para que el dashboard tenga un link publico, necesitas desplegar la app Streamlit en una plataforma que ejecute Python.
+GitHub solo almacena el codigo. Para que el dashboard tenga un link publico, necesitas desplegar la app Streamlit en una plataforma que ejecute Python o exponer el servidor donde ya esta corriendo.
+
+## Demo publico actual
+
+```text
+https://immunology-doll-bios-treatments.trycloudflare.com
+```
+
+Este enlace usa Cloudflare Quick Tunnel apuntando al dashboard local `http://localhost:8501` del servidor de demostracion. El servicio quedo configurado con `systemd` como `pepa-cloudflared.service` para reiniciarse si cae.
+
+Comandos utiles en el servidor:
+
+```bash
+systemctl status pepa-cloudflared.service
+grep -o 'https://[^ ]*trycloudflare.com' ~/bigdata/logs/cloudflared.log | tail -1
+sudo systemctl restart pepa-cloudflared.service
+```
+
+Nota: como no hay dominio propio, la URL puede cambiar si se reinicia el tunel. Para URL estable usa un dominio con Cloudflare Tunnel nombrado.
 
 ## Opcion recomendada: Streamlit Community Cloud
 

@@ -1,5 +1,15 @@
 # Manual de Implementacion - PEPA CyberResilience
 
+## Autores
+
+- Ruben Mark Salazar Tocas - Cod. 75184251
+- Daniel H. Calderon Camacho - Cod. 71101519
+- Uziel Elias Sauñe Fernandez - Cod. 75664788
+
+## Historia
+
+PEPA CyberResilience comenzo como un proyecto academico UPeU 2026-1 para demostrar una arquitectura Big Data aplicada a ciberseguridad. Evoluciono a una herramienta open source replicable con instalador, CLI, dashboard, modo demo, modo laboratorio y base de integracion con logs reales.
+
 ## 1. Objetivo
 
 PEPA CyberResilience permite desplegar una arquitectura replicable para analisis de ciberseguridad:
