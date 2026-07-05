@@ -42,11 +42,14 @@ Herramientas instaladas automaticamente por `setup.sh`:
 
 ## 3. Instalacion desde GitHub
 
+Importante: no ejecutes `setup.sh` con `sudo`. El instalador usa `sudo` internamente para paquetes y servicios, pero debe crear `~/bigdata` y `~/bigdata-env` en el usuario actual.
+
+
 ```bash
 git clone https://github.com/marksato13/PEPA-CyberResilience.git
 cd PEPA-CyberResilience
 chmod +x setup.sh pepa.sh run.sh stop.sh status.sh
-sudo ./setup.sh
+./setup.sh
 ```
 
 El instalador realiza:

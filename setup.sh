@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # =============================================================================
-# SETUP AUTOMÁTICO — Big Data UPeU 2026-1
-# Compatible: Ubuntu 22.04 / 24.04 / 24.10+
-# Instala: Java 17 · Python 3.12 · PySpark 4.1.2 · Streamlit · todo el stack
+# SETUP AUTOMATICO - PEPA CyberResilience
+# Compatible: Ubuntu Server 22.04 / 24.04 / 24.10+
+# Instala: Git, curl, Java 17, Python, venv, pip, Spark/PySpark, Streamlit y stack analitico
 # Uso: chmod +x setup.sh && ./setup.sh
 # =============================================================================
 set -e
+
+if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+    echo "[ERROR] No ejecutes setup.sh con sudo. Usa: ./setup.sh" >&2
+    echo "El script pedira sudo solo para instalar paquetes y servicios." >&2
+    exit 1
+fi
+
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
@@ -22,7 +29,7 @@ LOG_DIR="$BIGDATA_HOME/logs"
 
 echo -e ""
 echo -e "${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}║   BIG DATA UPeU 2026-1 — Setup Automático               ║${NC}"
+echo -e "${BOLD}║   PEPA CyberResilience — Setup Automatico               ║${NC}"
 echo -e "${BOLD}║   Pipeline · ML · Dashboard · Event Generator            ║${NC}"
 echo -e "${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -30,7 +37,7 @@ echo ""
 # ── PASO 1: Sistema operativo ──────────────────────────────────────────────
 log "PASO 1/7 — Actualizando sistema..."
 sudo apt-get update -qq
-sudo apt-get install -y -qq curl wget git unzip software-properties-common
+sudo apt-get install -y -qq curl wget git unzip ca-certificates software-properties-common python3 python3-venv python3-pip
 ok "Sistema actualizado"
 
 # ── PASO 2: Java 17 ───────────────────────────────────────────────────────
@@ -72,11 +79,15 @@ ok "python3-venv y pip listos"
 # ── PASO 4: Directorios ───────────────────────────────────────────────────
 log "PASO 4/7 — Creando estructura de directorios..."
 mkdir -p "$BIGDATA_HOME"/{scripts,tablas,output,logs}
+mkdir -p "$BIGDATA_HOME/scripts/parsers"
 ok "Directorio base: $BIGDATA_HOME"
 
-# Copiar scripts
+# Copiar scripts y parsers
 cp "$DEPLOY_DIR"/scripts/*.py "$BIGDATA_HOME/scripts/"
-ok "Scripts copiados → $BIGDATA_HOME/scripts/"
+if [ -d "$DEPLOY_DIR/scripts/parsers" ]; then
+    cp -R "$DEPLOY_DIR"/scripts/parsers/. "$BIGDATA_HOME/scripts/parsers/"
+fi
+ok "Scripts y parsers copiados -> $BIGDATA_HOME/scripts/"
 
 # Copiar datos
 cp "$DEPLOY_DIR"/tablas/*.csv "$BIGDATA_HOME/tablas/"
@@ -104,16 +115,20 @@ source "$ENV_DIR/bin/activate"
 
 log "  Instalando dependencias Python (puede tomar 2-5 min)..."
 pip install --upgrade pip --quiet
-pip install --quiet \
-    pyspark==4.1.2 \
-    pandas==2.2.3 \
-    pyarrow==24.0.0 \
-    streamlit==1.58.0 \
-    streamlit-autorefresh==1.0.1 \
-    plotly==6.7.0 \
-    python-pptx==1.0.2 \
-    matplotlib==3.9.0 \
-    numpy
+if [ -f "$DEPLOY_DIR/requirements.txt" ]; then
+    pip install --quiet -r "$DEPLOY_DIR/requirements.txt"
+else
+    pip install --quiet \
+        pyspark==4.1.2 \
+        pandas==2.2.3 \
+        pyarrow==24.0.0 \
+        streamlit==1.58.0 \
+        streamlit-autorefresh==1.0.1 \
+        plotly==6.7.0 \
+        python-pptx==1.0.2 \
+        matplotlib==3.9.0 \
+        numpy
+fi
 
 ok "Paquetes instalados:"
 pip list | grep -E 'pyspark|streamlit|pandas|pyarrow|plotly' | awk '{printf "    %-30s %s\n", $1, $2}'
@@ -121,7 +136,7 @@ pip list | grep -E 'pyspark|streamlit|pandas|pyarrow|plotly' | awk '{printf "   
 # Alias conveniente
 if ! grep -q 'alias bigdata' ~/.bashrc; then
     echo "" >> ~/.bashrc
-    echo "# BigData UPeU — alias" >> ~/.bashrc
+    echo "# PEPA CyberResilience alias" >> ~/.bashrc
     echo "alias bigdata='source $ENV_DIR/bin/activate && cd $BIGDATA_HOME'" >> ~/.bashrc
 fi
 
@@ -140,7 +155,7 @@ log "PASO 7/7 — Configurando servicios de inicio automático..."
 # Servicio event_generator
 sudo tee /etc/systemd/system/bigdata-generator.service > /dev/null << SVC1
 [Unit]
-Description=BigData UPeU — Event Generator
+Description=PEPA CyberResilience - Event Generator
 After=network.target
 
 [Service]
@@ -158,7 +173,7 @@ SVC1
 # Servicio dashboard
 sudo tee /etc/systemd/system/bigdata-dashboard.service > /dev/null << SVC2
 [Unit]
-Description=BigData UPeU — Streamlit Dashboard
+Description=PEPA CyberResilience - Streamlit Dashboard
 After=network.target bigdata-generator.service
 
 [Service]
@@ -192,7 +207,7 @@ echo -e "  ${GREEN}Eventos vivo:${NC}    $BIGDATA_HOME/output/live_events.csv"
 echo -e "  ${GREEN}Logs:${NC}            $BIGDATA_HOME/logs/"
 echo ""
 echo -e "  Comandos útiles:"
-echo -e "    ${CYAN}./run.sh${NC}        — levantar sistema manualmente"
-echo -e "    ${CYAN}./stop.sh${NC}       — detener sistema"
-echo -e "    ${CYAN}./status.sh${NC}     — ver estado"
+echo -e "    ${CYAN}./pepa.sh run --mode demo${NC}        - levantar demo completa"
+echo -e "    ${CYAN}./pepa.sh stop${NC}                   - detener sistema"
+echo -e "    ${CYAN}./pepa.sh status${NC}                 - ver estado"
 echo ""
