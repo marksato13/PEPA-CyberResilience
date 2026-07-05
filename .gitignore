@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime outputs
+logs/
+output/
+*.log
+*.pid
+live_events.csv
+
+# Local config
+.env
+config/pepa.env
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
